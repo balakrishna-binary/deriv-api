@@ -38,6 +38,16 @@ test('Fetch existing response from the storage', async () => {
     expect((await api.expectResponse('active_symbols')).active_symbols).toEqual({ new: 1 });
 });
 
+test.only('expectResponse should work for subsequent requests after initial request', async () => {
+    api.ticks('R_100');
+    const response_r_100 = await api.expectResponse('ticks');
+    expect(response_r_100.ticks.symbol).toEqual('R_100');
+
+    api.ticks('R_10');
+    const response_r_10 = await api.expectResponse('ticks');
+    expect(response_r_10.ticks.symbol).toEqual('R_10'); // This fails
+});
+
 beforeAll(() => {
     response         = {
         ping          : 'pong',
